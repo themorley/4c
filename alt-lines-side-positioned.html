@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternative Lines - Side Positioned</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .choice-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .choice-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .choice-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 25px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .demo-area {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            flex: 1;
+        }
+
+        .betting-interface {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .game-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .market-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .market-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .odds {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .spread-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .spread-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* ============================================
+           CHOICE 1: Small Badge to the Right
+           ============================================ */
+        .choice1 .alt-badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            opacity: 0.8;
+        }
+
+        .choice1 .alt-badge:hover {
+            opacity: 1;
+            background: #c7d2fe;
+            transform: translateX(2px);
+        }
+
+        /* ============================================
+           CHOICE 2: Badge with Icon, Smaller
+           ============================================ */
+        .choice2 .alt-badge {
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            border: 1px solid #e5e7eb;
+        }
+
+        .choice2 .alt-badge:hover {
+            background: #e5e7eb;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        .choice2 .badge-icon {
+            font-size: 8px;
+            transition: transform 0.2s;
+        }
+
+        .choice2 .alt-badge:hover .badge-icon {
+            transform: translateY(1px);
+        }
+
+        /* ============================================
+           CHOICE 3: Just Icon, Very Subtle
+           ============================================ */
+        .choice3 .alt-badge {
+            background: transparent;
+            color: #9ca3af;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+
+        .choice3 .alt-badge:hover {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .choice3 .badge-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .choice3 .alt-badge:hover .badge-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Tooltip for choice 3 */
+        .choice3 .alt-badge::after {
+            content: 'Alt lines';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 6px;
+            background: #1f2937;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .choice3 .alt-badge:hover::after {
+            opacity: 1;
+        }
+
+        .choice3 .alt-badge::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: #1f2937;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .choice3 .alt-badge:hover::before {
+            opacity: 1;
+        }
+
+        /* Rationale Section */
+        .rationale {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .rationale h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .rationale ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rationale li {
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .rationale li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        .comparison-table h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .check {
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alternative Lines - Side Positioned</h1>
+        <p class="subtitle">Badge positioned to the side, not as a centerpiece</p>
+
+        <div class="choices-grid">
+            <!-- Choice 1 -->
+            <div class="choice-section choice1">
+                <div class="choice-title">Choice 1: Small Badge Right</div>
+                <div class="choice-subtitle">Compact badge, subtle hover</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">ALT</div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Positioned to the side, not centered</li>
+                        <li>Small, compact badge doesn't compete with number</li>
+                        <li>Subtle opacity until hover</li>
+                        <li>Slides slightly right on hover as feedback</li>
+                        <li>Very low risk of accidental clicks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Choice 2 -->
+            <div class="choice-section choice2">
+                <div class="choice-title">Choice 2: Gray Badge with Icon</div>
+                <div class="choice-subtitle">Informational styling, side position</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">
+                                    <span class="badge-icon">⌄</span> ALT
+                                </div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Gray color = informational, not action</li>
+                        <li>Icon provides visual cue without being loud</li>
+                        <li>Side position keeps focus on the number</li>
+                        <li>Small size prevents accidental interaction</li>
+                        <li>Hover darkens slightly for feedback</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Choice 3 -->
+            <div class="choice-section choice3">
+                <div class="choice-title">Choice 3: Icon Only</div>
+                <div class="choice-subtitle">Minimalist, just a small icon</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">
+                                    <span class="badge-icon">⚙</span>
+                                </div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Most subtle - just a small icon</li>
+                        <li>Tooltip appears on hover to explain</li>
+                        <li>Doesn't compete with main content at all</li>
+                        <li>Icon rotates on hover for feedback</li>
+                        <li>Extremely low risk of accidental clicks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+            <h2>Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Choice 1: Small Badge</th>
+                        <th>Choice 2: Gray Badge</th>
+                        <th>Choice 3: Icon Only</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Subtlety</strong></td>
+                        <td>Medium - visible but small</td>
+                        <td>High - gray is subtle</td>
+                        <td class="check">Highest - just an icon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Discoverability</strong></td>
+                        <td class="check">Good - text is clear</td>
+                        <td class="check">Good - icon + text</td>
+                        <td>Lower - needs hover for tooltip</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accidental Clicks</strong></td>
+                        <td class="check">Very low</td>
+                        <td class="check">Very low</td>
+                        <td class="check">Extremely low</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Side Position</strong></td>
+                        <td class="check">Yes - to the right</td>
+                        <td class="check">Yes - to the right</td>
+                        <td class="check">Yes - to the right</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Not Centerpiece</strong></td>
+                        <td class="check">Secondary element</td>
+                        <td class="check">Secondary element</td>
+                        <td class="check">Minimal presence</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mobile Friendly</strong></td>
+                        <td class="check">Yes - small tap target</td>
+                        <td class="check">Yes - clear target</td>
+                        <td>Smaller target</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

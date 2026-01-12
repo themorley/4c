@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Sports Betting EV Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>EV Calculator</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="ev-calculator">EV Calculator</button>
+                <button class="tab-btn" data-tab="wong-teaser">Wong Teaser</button>
+            </nav>
+        </header>
+
+        <!-- EV Calculator Tab -->
+        <div id="ev-calculator" class="tab-content active">
+            <div class="section">
+                <h2>Bankroll</h2>
+                <div class="input-group">
+                    <label for="bankroll">Bankroll ($)</label>
+                    <input type="number" id="bankroll" placeholder="Enter bankroll" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Sharp Book Lines (True Market)</h2>
+                <div class="input-group">
+                    <label for="sharp-favorite">Favorite Line</label>
+                    <input type="number" id="sharp-favorite" placeholder="e.g., -110" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="sharp-underdog">Underdog Line</label>
+                    <input type="number" id="sharp-underdog" placeholder="e.g., +110" step="1">
+                </div>
+                <button class="btn-secondary" id="calculate-implied">Calculate Implied Probabilities</button>
+                <div class="results-box" id="implied-probs" style="display: none;">
+                    <p><strong>Implied Probabilities:</strong></p>
+                    <p>Favorite: <span id="implied-fav"></span></p>
+                    <p>Underdog: <span id="implied-dog"></span></p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Recreational Book Line</h2>
+                <div class="input-group">
+                    <label for="bet-side">Which side are you betting?</label>
+                    <select id="bet-side">
+                        <option value="favorite">Favorite</option>
+                        <option value="underdog">Underdog</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rec-line">Recreational Book Line</label>
+                    <input type="number" id="rec-line" placeholder="e.g., -105" step="1">
+                </div>
+                <button class="btn-primary" id="calculate-ev">Calculate EV</button>
+            </div>
+
+            <div class="results-section" id="ev-results" style="display: none;">
+                <h2>Results</h2>
+                <div class="result-card">
+                    <div class="result-item">
+                        <span class="label">Expected Value (EV):</span>
+                        <span class="value" id="ev-value"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">True Probability:</span>
+                        <span class="value" id="true-prob"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Kelly Bet Size (%):</span>
+                        <span class="value" id="kelly-percent"></span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span class="label">Optimal Wager:</span>
+                        <span class="value" id="optimal-wager"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Potential Win:</span>
+                        <span class="value" id="potential-win"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wong Teaser Tab -->
+        <div id="wong-teaser" class="tab-content">
+            <div class="section">
+                <h2>Bankroll</h2>
+                <div class="input-group">
+                    <label for="teaser-bankroll">Bankroll ($)</label>
+                    <input type="number" id="teaser-bankroll" placeholder="Enter bankroll" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Teaser Configuration</h2>
+                <div class="input-group">
+                    <label for="teaser-legs">Number of Legs</label>
+                    <select id="teaser-legs">
+                        <option value="2">2 Legs</option>
+                        <option value="3">3 Legs</option>
+                        <option value="4">4 Legs</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="teaser-odds">Teaser Odds</label>
+                    <input type="number" id="teaser-odds" placeholder="e.g., -110, -120, -130" step="1">
+                    <small style="color: var(--text-secondary); font-size: 12px; margin-top: 4px; display: block;">Enter the odds the book is offering for this teaser</small>
+                </div>
+                <div class="input-group">
+                    <label for="push-handling">Push Handling</label>
+                    <select id="push-handling">
+                        <option value="loss">Push = Loss</option>
+                        <option value="void">Push = Void</option>
+                        <option value="push">Push = Leg Push</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Legs</h2>
+                <div id="teaser-legs-container"></div>
+                <button class="btn-primary" id="calculate-teaser">Calculate Teaser EV</button>
+            </div>
+
+            <div class="results-section" id="teaser-results" style="display: none;">
+                <h2>Teaser Results</h2>
+                <div class="result-card">
+                    <div class="result-item">
+                        <span class="label">Teaser EV:</span>
+                        <span class="value" id="teaser-ev"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Combined True Probability:</span>
+                        <span class="value" id="teaser-prob"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Kelly Bet Size (%):</span>
+                        <span class="value" id="teaser-kelly"></span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span class="label">Optimal Wager:</span>
+                        <span class="value" id="teaser-wager"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

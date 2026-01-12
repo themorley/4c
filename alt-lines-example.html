@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alt Lines Badge - Example</title>
+    <link rel="stylesheet" href="alt-lines-badge.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .example-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .example-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        .market-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .market-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .odds {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .game-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alt Lines Badge - Working Example</h1>
+
+        <!-- Example 1: Spread with Alt Lines -->
+        <div class="example-section">
+            <div class="example-title">Example 1: Spread Market WITH Alt Lines</div>
+            <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+            <div class="market-row">
+                <div class="market-label">Spread</div>
+                <div id="spread-with-alt"></div>
+                <div class="odds">-110</div>
+            </div>
+            <div class="code-block">
+// Badge appears because altSpreads array has items
+const spreadMarket = {
+    spread: -3.5,
+    altSpreads: [
+        { value: -3, odds: -110 },
+        { value: -4, odds: -105 }
+    ]
+};
+            </div>
+        </div>
+
+        <!-- Example 2: Spread WITHOUT Alt Lines -->
+        <div class="example-section">
+            <div class="example-title">Example 2: Spread Market WITHOUT Alt Lines</div>
+            <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+            <div class="market-row">
+                <div class="market-label">Spread</div>
+                <div id="spread-no-alt"></div>
+                <div class="odds">-110</div>
+            </div>
+            <div class="code-block">
+// No badge appears because altSpreads is empty
+const spreadMarket = {
+    spread: -3.5,
+    altSpreads: []
+};
+            </div>
+        </div>
+
+        <!-- Example 3: Total with Alt Lines -->
+        <div class="example-section">
+            <div class="example-title">Example 3: Total Market WITH Alt Lines</div>
+            <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+            <div class="market-row">
+                <div class="market-label">Over/Under</div>
+                <div id="total-with-alt"></div>
+                <div class="odds">-112</div>
+            </div>
+            <div class="code-block">
+// Badge appears because altTotals array has items
+const totalMarket = {
+    total: 45.5,
+    altTotals: [
+        { value: 44.5, odds: -110 },
+        { value: 46.5, odds: -108 },
+        { value: 47.5, odds: -105 }
+    ]
+};
+            </div>
+        </div>
+
+        <!-- Example 4: Total WITHOUT Alt Lines -->
+        <div class="example-section">
+            <div class="example-title">Example 4: Total Market WITHOUT Alt Lines</div>
+            <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+            <div class="market-row">
+                <div class="market-label">Over/Under</div>
+                <div id="total-no-alt"></div>
+                <div class="odds">-112</div>
+            </div>
+            <div class="code-block">
+// No badge appears because altTotals is undefined
+const totalMarket = {
+    total: 45.5
+    // altTotals not included
+};
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> Hover over the badges to see the hover effect. Click handlers would open the alt lines modal in your actual implementation.
+        </div>
+    </div>
+
+    <script src="alt-lines-badge.js"></script>
+    <script>
+        // Example 1: Spread WITH alt lines
+        const spreadWithAlt = {
+            spread: -3.5,
+            altSpreads: [
+                { value: -3, odds: -110 },
+                { value: -4, odds: -105 }
+            ]
+        };
+
+        const spreadContainer1 = createSpreadTotalElement(spreadWithAlt.spread, {
+            altLines: spreadWithAlt.altSpreads,
+            onClick: () => {
+                console.log('Opening alt lines modal for spread:', spreadWithAlt.altSpreads);
+                alert('Would open alt lines modal with: ' + JSON.stringify(spreadWithAlt.altSpreads));
+            }
+        });
+        document.getElementById('spread-with-alt').appendChild(spreadContainer1);
+
+        // Example 2: Spread WITHOUT alt lines
+        const spreadNoAlt = {
+            spread: -3.5,
+            altSpreads: []
+        };
+
+        const spreadContainer2 = createSpreadTotalElement(spreadNoAlt.spread, {
+            altLines: spreadNoAlt.altSpreads,
+            onClick: () => console.log('This won\'t be called - no badge shown')
+        });
+        document.getElementById('spread-no-alt').appendChild(spreadContainer2);
+
+        // Example 3: Total WITH alt lines
+        const totalWithAlt = {
+            total: 45.5,
+            altTotals: [
+                { value: 44.5, odds: -110 },
+                { value: 46.5, odds: -108 },
+                { value: 47.5, odds: -105 }
+            ]
+        };
+
+        const totalContainer1 = createSpreadTotalElement(totalWithAlt.total, {
+            altLines: totalWithAlt.altTotals,
+            onClick: () => {
+                console.log('Opening alt lines modal for total:', totalWithAlt.altTotals);
+                alert('Would open alt lines modal with: ' + JSON.stringify(totalWithAlt.altTotals));
+            }
+        });
+        document.getElementById('total-with-alt').appendChild(totalContainer1);
+
+        // Example 4: Total WITHOUT alt lines
+        const totalNoAlt = {
+            total: 45.5
+            // altTotals not included
+        };
+
+        const totalContainer2 = createSpreadTotalElement(totalNoAlt.total, {
+            altLines: totalNoAlt.altTotals || [],
+            onClick: () => console.log('This won\'t be called - no badge shown')
+        });
+        document.getElementById('total-no-alt').appendChild(totalContainer2);
+    </script>
+</body>
+</html>

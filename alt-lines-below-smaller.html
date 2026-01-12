@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternative Lines - Below, Smaller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .choice-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .choice-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .choice-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 25px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .demo-area {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            flex: 1;
+        }
+
+        .betting-interface {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .game-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .market-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .market-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .odds {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .spread-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .spread-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* ============================================
+           CHOICE 1: Small Badge Below
+           ============================================ */
+        .choice1 .alt-badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            opacity: 0.85;
+        }
+
+        .choice1 .alt-badge:hover {
+            opacity: 1;
+            background: #c7d2fe;
+        }
+
+        /* ============================================
+           CHOICE 2: Smaller Gray Badge
+           ============================================ */
+        .choice2 .alt-badge {
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid #e5e7eb;
+        }
+
+        .choice2 .alt-badge:hover {
+            background: #e5e7eb;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        /* ============================================
+           CHOICE 3: Minimal Text Below
+           ============================================ */
+        .choice3 .alt-badge {
+            color: #9ca3af;
+            font-size: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            opacity: 0.7;
+        }
+
+        .choice3 .alt-badge:hover {
+            color: #6b7280;
+            opacity: 1;
+        }
+
+        /* Rationale Section */
+        .rationale {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .rationale h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .rationale ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rationale li {
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .rationale li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        .comparison-table h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .check {
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alternative Lines - Below, Smaller</h1>
+        <p class="subtitle">Small badge positioned below the number, not as a centerpiece</p>
+
+        <div class="choices-grid">
+            <!-- Choice 1 -->
+            <div class="choice-section choice1">
+                <div class="choice-title">Choice 1: Small Purple Badge</div>
+                <div class="choice-subtitle">Compact, subtle color</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">ALT LINES</div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Smaller than original - less prominent</li>
+                        <li>Positioned below number, centered</li>
+                        <li>Subtle opacity until hover</li>
+                        <li>Small size prevents accidental clicks</li>
+                        <li>Keeps your color scheme but smaller</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Choice 2 -->
+            <div class="choice-section choice2">
+                <div class="choice-title">Choice 2: Small Gray Badge</div>
+                <div class="choice-subtitle">More subtle, informational</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">ALT LINES</div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Gray = informational, not action</li>
+                        <li>Even smaller and more subtle</li>
+                        <li>Below number, doesn't compete</li>
+                        <li>Very low risk of accidental clicks</li>
+                        <li>Blends into background more</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Choice 3 -->
+            <div class="choice-section choice3">
+                <div class="choice-title">Choice 3: Minimal Text</div>
+                <div class="choice-subtitle">Just text, no background</div>
+                
+                <div class="demo-area">
+                    <div class="betting-interface">
+                        <div class="game-header">17 Jan 07:00 PM - San Francisco 49ers at Seattle Seahawks</div>
+                        <div class="market-row">
+                            <div class="market-label">Over/Under</div>
+                            <div class="spread-container">
+                                <div class="spread-value">45.5</div>
+                                <div class="alt-badge">ALT LINES</div>
+                            </div>
+                            <div class="odds">-112</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rationale">
+                    <h3>Why This Works:</h3>
+                    <ul>
+                        <li>Most minimal - just text</li>
+                        <li>No background box at all</li>
+                        <li>Very subtle gray text</li>
+                        <li>Below number, unobtrusive</li>
+                        <li>Extremely low visual weight</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+            <h2>Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Choice 1: Small Purple</th>
+                        <th>Choice 2: Small Gray</th>
+                        <th>Choice 3: Minimal Text</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Size</strong></td>
+                        <td class="check">Smaller</td>
+                        <td class="check">Smaller</td>
+                        <td class="check">Smallest</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Position</strong></td>
+                        <td class="check">Below number</td>
+                        <td class="check">Below number</td>
+                        <td class="check">Below number</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Subtlety</strong></td>
+                        <td>Medium - has color</td>
+                        <td class="check">High - gray blends</td>
+                        <td class="check">Highest - no background</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Discoverability</strong></td>
+                        <td class="check">Good - visible</td>
+                        <td>Lower - more subtle</td>
+                        <td>Lowest - very minimal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accidental Clicks</strong></td>
+                        <td class="check">Very low</td>
+                        <td class="check">Very low</td>
+                        <td class="check">Extremely low</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Not Centerpiece</strong></td>
+                        <td class="check">Secondary element</td>
+                        <td class="check">Secondary element</td>
+                        <td class="check">Minimal presence</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

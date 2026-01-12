@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Spread Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .bet-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .game-info {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .game-info h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .selected-spread {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .spread-button {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .spread-button:hover {
+            background: #e8e8e8;
+            border-color: #bbb;
+        }
+
+        .spread-button:active {
+            transform: scale(0.98);
+        }
+
+        .spread-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            min-width: 300px;
+            padding: 12px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .spread-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .spread-table th {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .spread-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .spread-cell {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .spread-cell:hover:not(.disabled):not(.selected) {
+            background: #f0f7ff;
+        }
+
+        .spread-cell.selected {
+            background: #2563eb;
+            color: white;
+        }
+
+        .spread-cell.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .spread-value {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .spread-odds {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .spread-cell.selected .spread-odds {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .bet-action {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .bet-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .bet-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="bet-container">
+        <div class="game-info">
+            <h3>11 Jan 07:15 PM - Los Angeles Chargers at New England Patriots</h3>
+            <div class="selected-spread" id="selected-spread">New England Patriots -3.5 -105.1</div>
+            <button class="spread-button" id="spread-toggle">Change Spread</button>
+        </div>
+
+        <div class="spread-dropdown">
+            <div class="dropdown-content" id="spread-dropdown">
+                <table class="spread-table">
+                    <thead>
+                        <tr>
+                            <th>LAC</th>
+                            <th>NE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spread-tbody">
+                        <!-- Spreads will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bet-action">
+            <button class="bet-button" id="place-bet">Take bet for $0 to win $0</button>
+        </div>
+    </div>
+
+    <script>
+        // Spread data
+        const spreads = [
+            { value: 1, lac: { odds: 0 }, ne: { odds: -200 } },
+            { value: 1.5, lac: { odds: 151.1 }, ne: { odds: -176.9 } },
+            { value: 2, lac: { odds: 0 }, ne: { odds: -180 } },
+            { value: 2.5, lac: { odds: 140 }, ne: { odds: -165 } },
+            { value: 3, lac: { odds: 121 }, ne: { odds: -128 } },
+            { value: 3.5, lac: { odds: -100.2 }, ne: { odds: -103 } }
+        ];
+
+        let selectedTeam = 'NE'; // 'LAC' or 'NE'
+        let selectedSpread = 3.5;
+        let selectedOdds = -103;
+
+        // Initialize the spread table
+        function renderSpreadTable() {
+            const tbody = document.getElementById('spread-tbody');
+            tbody.innerHTML = '';
+
+            spreads.forEach(spread => {
+                const row = document.createElement('tr');
+                
+                // LAC cell
+                const lacCell = document.createElement('td');
+                const lacSpreadCell = document.createElement('div');
+                lacSpreadCell.className = 'spread-cell';
+                lacSpreadCell.dataset.team = 'LAC';
+                lacSpreadCell.dataset.spread = spread.value;
+                lacSpreadCell.dataset.odds = spread.lac.odds;
+                
+                const lacValue = document.createElement('div');
+                lacValue.className = 'spread-value';
+                lacValue.textContent = `+${spread.value}`;
+                
+                const lacOdds = document.createElement('div');
+                lacOdds.className = 'spread-odds';
+                lacOdds.textContent = spread.lac.odds === 0 ? '—' : spread.lac.odds;
+                
+                lacSpreadCell.appendChild(lacValue);
+                lacSpreadCell.appendChild(lacOdds);
+                lacCell.appendChild(lacSpreadCell);
+                
+                // NE cell
+                const neCell = document.createElement('td');
+                const neSpreadCell = document.createElement('div');
+                neSpreadCell.className = 'spread-cell';
+                neSpreadCell.dataset.team = 'NE';
+                neSpreadCell.dataset.spread = spread.value;
+                neSpreadCell.dataset.odds = spread.ne.odds;
+                
+                const neValue = document.createElement('div');
+                neValue.className = 'spread-value';
+                neValue.textContent = `-${spread.value}`;
+                
+                const neOdds = document.createElement('div');
+                neOdds.className = 'spread-odds';
+                neOdds.textContent = spread.ne.odds === 0 ? '—' : spread.ne.odds;
+                
+                neSpreadCell.appendChild(neValue);
+                neSpreadCell.appendChild(neOdds);
+                neCell.appendChild(neSpreadCell);
+                
+                row.appendChild(lacCell);
+                row.appendChild(neCell);
+                tbody.appendChild(row);
+            });
+
+            updateSpreadCells();
+        }
+
+        // Update spread cells based on selected team
+        function updateSpreadCells() {
+            const allCells = document.querySelectorAll('.spread-cell');
+            
+            allCells.forEach(cell => {
+                const cellTeam = cell.dataset.team;
+                const cellSpread = parseFloat(cell.dataset.spread);
+                const cellOdds = parseFloat(cell.dataset.odds);
+                
+                // Remove all classes
+                cell.classList.remove('selected', 'disabled');
+                
+                // If a team is selected, mark the current selection
+                if (selectedTeam) {
+                    // If this cell is for the selected team and matches the selected spread
+                    if (cellTeam === selectedTeam && cellSpread === selectedSpread) {
+                        cell.classList.add('selected');
+                    }
+                    // Both teams' spreads should remain clickable - don't disable anything
+                }
+            });
+        }
+
+        // Handle spread cell click
+        function handleSpreadClick(event) {
+            const cell = event.currentTarget;
+            
+            // Don't process clicks on disabled cells
+            if (cell.classList.contains('disabled')) {
+                return;
+            }
+
+            const team = cell.dataset.team;
+            const spread = parseFloat(cell.dataset.spread);
+            const odds = parseFloat(cell.dataset.odds);
+
+            // Update selection
+            selectedTeam = team;
+            selectedSpread = spread;
+            selectedOdds = odds;
+
+            // Update display
+            const teamName = team === 'LAC' ? 'Los Angeles Chargers' : 'New England Patriots';
+            const spreadSign = team === 'LAC' ? '+' : '-';
+            document.getElementById('selected-spread').textContent = 
+                `${teamName} ${spreadSign}${spread} ${odds}`;
+
+            // Update cell states
+            updateSpreadCells();
+
+            // Close dropdown
+            document.getElementById('spread-dropdown').classList.remove('show');
+        }
+
+        // Toggle dropdown
+        document.getElementById('spread-toggle').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('spread-dropdown');
+            const isOpening = !dropdown.classList.contains('show');
+            dropdown.classList.toggle('show');
+            
+            // Update cell states when opening dropdown
+            if (isOpening) {
+                updateSpreadCells();
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('spread-dropdown');
+            const toggle = document.getElementById('spread-toggle');
+            
+            if (!dropdown.contains(e.target) && !toggle.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Initialize
+        renderSpreadTable();
+
+        // Add click listeners to spread cells using event delegation
+        document.getElementById('spread-tbody').addEventListener('click', function(e) {
+            const cell = e.target.closest('.spread-cell');
+            if (cell && !cell.classList.contains('disabled')) {
+                handleSpreadClick({ currentTarget: cell });
+            }
+        });
+    </script>
+</body>
+</html>

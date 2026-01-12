@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator Test</title>
+</head>
+<body>
+    <h1>Quick Calculation Tests</h1>
+    <div id="results"></div>
+    <script>
+        // Test utility functions
+        function americanToImpliedProb(odds) {
+            if (odds > 0) {
+                return 100 / (odds + 100);
+            } else {
+                return -odds / (-odds + 100);
+            }
+        }
+
+        function americanToDecimal(odds) {
+            if (odds > 0) {
+                return (odds + 100) / 100;
+            } else {
+                return (100 - odds) / 100;
+            }
+        }
+
+        function calculateEV(trueProb, recOdds) {
+            const recDecimal = americanToDecimal(recOdds);
+            const winProb = trueProb;
+            const loseProb = 1 - trueProb;
+            const winAmount = recDecimal - 1;
+            const ev = (winProb * winAmount) - (loseProb * 1);
+            return ev * 100;
+        }
+
+        // Test cases
+        const results = [];
+        
+        // Test 1: -110 favorite, +110 underdog
+        const favProb = americanToImpliedProb(-110);
+        const dogProb = americanToImpliedProb(+110);
+        results.push(`Test 1: -110 favorite = ${(favProb * 100).toFixed(2)}%, +110 dog = ${(dogProb * 100).toFixed(2)}%`);
+        
+        // Test 2: EV calculation (favorite -110 true, bet at -105)
+        const ev1 = calculateEV(favProb, -105);
+        results.push(`Test 2: EV betting -110 favorite at -105 = ${ev1.toFixed(2)}% (should be positive ~1.5%)`);
+        
+        // Test 3: EV calculation (favorite -110 true, bet at -115 - bad line)
+        const ev2 = calculateEV(favProb, -115);
+        results.push(`Test 3: EV betting -110 favorite at -115 = ${ev2.toFixed(2)}% (should be negative ~-1.5%)`);
+        
+        // Test 4: Kelly calculation
+        function calculateKelly(trueProb, odds, bankroll) {
+            if (!bankroll || bankroll <= 0) return 0;
+            const decimalOdds = americanToDecimal(odds);
+            const q = 1 - trueProb;
+            const p = trueProb;
+            const b = decimalOdds - 1;
+            if (b <= 0 || p <= 0) return 0;
+            const kellyPercent = (b * p - q) / b;
+            const safeKellyPercent = Math.min(Math.max(kellyPercent * 0.5, 0), 0.1);
+            return safeKellyPercent * 100;
+        }
+        
+        const kelly1 = calculateKelly(favProb, -105, 10000);
+        results.push(`Test 4: Kelly for -105 bet with $10k bankroll = ${kelly1.toFixed(2)}%`);
+        
+        // Display results
+        document.getElementById('results').innerHTML = results.map(r => `<p>${r}</p>`).join('');
+        console.log('Test Results:', results);
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+/**
+ * Alt Lines Badge Styles
+ * 
+ * Small badge that appears below spread/total numbers to indicate
+ * alternative lines are available. Only shows when alt lines exist.
+ */
+
+/* Container for spread/total value with optional alt lines badge */
+.spread-total-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* The main spread/total value */
+.spread-total-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+}
+
+/* Alt lines badge - only visible when alt lines exist */
+.alt-lines-badge {
+    background: #e0e7ff;
+    color: #4338ca;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    opacity: 0.85;
+    display: inline-block;
+}
+
+.alt-lines-badge:hover {
+    opacity: 1;
+    background: #c7d2fe;
+    transform: translateY(-1px);
+}
+
+.alt-lines-badge:active {
+    transform: translateY(0);
+}
+
+/* Hide badge by default - will be shown via JavaScript when alt lines exist */
+.alt-lines-badge.hidden {
+    display: none;
+}
